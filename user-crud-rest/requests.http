@@ -1,0 +1,45 @@
+### Requests for testing the API.
+### In IntelliJ IDEA click the green arrow next to a request.
+### Start the application first.
+
+### 1. Create a user (expect 201)
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "email": "john@test.com",
+  "age": 25
+}
+
+### 2. Get all users (expect 200)
+GET http://localhost:8080/api/users
+
+### 3. Get one user (expect 200, or 404 if the id does not exist)
+GET http://localhost:8080/api/users/1
+
+### 4. Update a user (expect 200, or 404 if the id does not exist)
+PUT http://localhost:8080/api/users/1
+Content-Type: application/json
+
+{
+  "firstName": "Johnny",
+  "lastName": "Smith",
+  "email": "john@test.com",
+  "age": 26
+}
+
+### 5. Delete a user (expect 204, or 404 if the id does not exist)
+DELETE http://localhost:8080/api/users/1
+
+### 6. Bad data (expect 400, because the email is not valid)
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "firstName": "Bad",
+  "lastName": "Email",
+  "email": "not-an-email",
+  "age": 20
+}
