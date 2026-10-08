@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * REST API for users:   /api/users
@@ -41,8 +42,9 @@ public class UserController {
         // TODO:
         // 1. Save the user with userRepository.save(...)
         // 2. Return status 201 (HttpStatus.CREATED) with the saved user in the body.
+        userRepository.save(user);
 
-        return notImplemented(); // TEMPORARY - delete this line
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // ------------------------------------------------------------------
@@ -53,8 +55,7 @@ public class UserController {
         // TODO:
         // 1. Get all users with userRepository.findAll()
         // 2. Return them with status 200 (ResponseEntity.ok(...)).
-
-        return notImplemented(); // TEMPORARY - delete this line
+        return ResponseEntity.ok(userRepository.findAll());
     }
 
     // ------------------------------------------------------------------
@@ -66,8 +67,13 @@ public class UserController {
         // 1. Find the user with userRepository.findById(id)
         // 2. If it exists, return it with status 200.
         // 3. If it does not exist, return status 404 (ResponseEntity.notFound().build()).
-
-        return notImplemented(); // TEMPORARY - delete this line
+        Optional<User> user = userRepository.findById(id);
+        if(user.isPresent()){
+            return ResponseEntity.ok(user.get());
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // ------------------------------------------------------------------
@@ -80,8 +86,13 @@ public class UserController {
         // 2. Put the id from the URL into newData: newData.setId(id)
         // 3. Save newData with userRepository.save(...)
         // 4. Return the saved user with status 200.
-
-        return notImplemented(); // TEMPORARY - delete this line
+        boolean existsOrNot = userRepository.existsById(id);
+        if(existsOrNot){
+            return ResponseEntity.notFound().build();
+        }
+        newData.setId(id);
+        userRepository.save(newData);
+        return ResponseEntity.ok(newData);
     }
 
     // ------------------------------------------------------------------
@@ -93,8 +104,12 @@ public class UserController {
         // 1. If the user does not exist, return 404.
         // 2. Delete it with userRepository.deleteById(id)
         // 3. Return status 204 (ResponseEntity.noContent().build()).
-
-        return notImplemented(); // TEMPORARY - delete this line
+        boolean existsOrNot = userRepository.existsById(id);
+        if(existsOrNot){
+            return ResponseEntity.notFound().build();
+        }
+        userRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     // PROVIDED - the temporary answer used above. Delete it with the TEMPORARY lines if you want.
