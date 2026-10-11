@@ -48,7 +48,8 @@ public class UserController {
         //        model.addAttribute("users", ...)
         // 3. Return the page name "users/list".
 
-        return NOT_IMPLEMENTED; // TEMPORARY - delete this line
+        model.addAttribute("users", userRepository.findAll());
+        return "users/list";
     }
 
     // ------------------------------------------------------------------
@@ -60,8 +61,8 @@ public class UserController {
         // 1. Put a new empty User in the model with the name "user":
         //        model.addAttribute("user", new User())
         // 2. Return the page name "users/form".
-
-        return NOT_IMPLEMENTED; // TEMPORARY - delete this line
+        model.addAttribute("user", new User());
+        return "users/form";
     }
 
     // ------------------------------------------------------------------
@@ -76,8 +77,11 @@ public class UserController {
         //    (the form is shown again, with the error messages).
         // 2. Save the user: userRepository.save(user)
         // 3. Return "redirect:/users".
-
-        return NOT_IMPLEMENTED; // TEMPORARY - delete this line
+        if(bindingResult.hasErrors()) {
+            return "users/form";
+        }
+        userRepository.save(user);
+        return "redirect:/users";
     }
 
     // ------------------------------------------------------------------
@@ -90,8 +94,12 @@ public class UserController {
         // 2. If it does not exist, return "redirect:/users".
         // 3. Put the user in the model with the name "user".
         // 4. Return "users/form".
-
-        return NOT_IMPLEMENTED; // TEMPORARY - delete this line
+        Optional<User> found = userRepository.findById(id);
+        if(found.isEmpty()){
+            return "redirect:/users";
+        }
+        model.addAttribute("user", found.get());
+        return "users/form";
     }
 
     // ------------------------------------------------------------------
@@ -109,8 +117,15 @@ public class UserController {
         //    return "redirect:/users".
         // 4. Save the user: userRepository.save(user)
         // 5. Return "redirect:/users".
-
-        return NOT_IMPLEMENTED; // TEMPORARY - delete this line
+        user.setId(id);
+        if(bindingResult.hasErrors()){
+            return "users/form";
+        }
+        if(!userRepository.existsById(id)){
+            return "redirect:/users";
+        }
+        userRepository.save(user);
+        return "redirect:/users";
     }
 
     // ------------------------------------------------------------------
@@ -122,10 +137,8 @@ public class UserController {
         // TODO:
         // 1. Delete the user: userRepository.deleteById(id)
         // 2. Return "redirect:/users".
-
-        return NOT_IMPLEMENTED; // TEMPORARY - delete this line
+        userRepository.deleteById(id);
+        return "redirect:/users";
     }
 
-    // PROVIDED - the temporary page used above. Delete it with the TEMPORARY lines if you want.
-    private static final String NOT_IMPLEMENTED = "not-implemented";
 }

@@ -87,7 +87,7 @@ public class UserController {
         // 3. Save newData with userRepository.save(...)
         // 4. Return the saved user with status 200.
         boolean existsOrNot = userRepository.existsById(id);
-        if(existsOrNot){
+        if(!existsOrNot){
             return ResponseEntity.notFound().build();
         }
         newData.setId(id);
@@ -105,7 +105,7 @@ public class UserController {
         // 2. Delete it with userRepository.deleteById(id)
         // 3. Return status 204 (ResponseEntity.noContent().build()).
         boolean existsOrNot = userRepository.existsById(id);
-        if(existsOrNot){
+        if(!existsOrNot){
             return ResponseEntity.notFound().build();
         }
         userRepository.deleteById(id);
