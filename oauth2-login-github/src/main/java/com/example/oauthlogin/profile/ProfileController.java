@@ -19,6 +19,7 @@ public class ProfileController {
     public String profile(@AuthenticationPrincipal OAuth2User user, Model model) {
         // TODO: add the mapped GitHubProfile to the model as "profile".
         // Then return "profile" to render templates/profile.html.
-        return "not-implemented";
+        model.addAttribute("profile", profileService.from(user));
+        return "profile";
     }
 }

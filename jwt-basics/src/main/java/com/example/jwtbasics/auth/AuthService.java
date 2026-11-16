@@ -1,7 +1,12 @@
 package com.example.jwtbasics.auth;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /** Student task: authenticate first, issue a token only on success. */
 @Service
@@ -20,6 +25,17 @@ public class AuthService {
         // Strip ROLE_ when passing roles to TokenService.issue ("USER", "ADMIN").
         // Return LoginResponse("Bearer", token, tokenService.ttlSeconds()).
         // AuthenticationException is handled as 401 by AuthExceptionHandler.
-        throw new UnsupportedOperationException("Implement login");
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+
+        String username = authentication.getName();
+        List<String> roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(a -> a.startsWith("ROLE_"))
+                .map(a -> a.substring("ROLE_".length()))
+                .toList();
+
+        String token = tokenService.issue(username, roles);
+        return new LoginResponse("Bearer", token, tokenService.ttlSeconds());
     }
 }

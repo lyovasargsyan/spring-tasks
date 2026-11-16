@@ -30,12 +30,15 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
         String correlationId = resolveCorrelationId(request.getHeader(HEADER));
 
         // TODO: put correlationId into MDC under MDC_KEY, so every log line of this request has it.
+        MDC.put(MDC_KEY, correlationId);
         // TODO: send it back to the client in the HEADER response header.
+        response.setHeader(HEADER, correlationId);
         try {
             chain.doFilter(request, response);
         } finally {
             // TODO: remove MDC_KEY from MDC. Server threads are reused, so a value left here
             // would appear in the logs of the next, unrelated request.
+            MDC.remove(MDC_KEY);
         }
     }
 

@@ -11,6 +11,19 @@ public class GitHubProfileService {
         // Use login as displayName when name is missing or blank.
         // GitHub id is stable; a login name may change.
         // Never include the GitHub access token in the profile.
-        throw new UnsupportedOperationException("Implement GitHub profile mapping");
+        Object idAttribute = user.getAttribute("id");
+        if (!(idAttribute instanceof Number id)) {
+            throw new IllegalArgumentException("GitHub profile is missing a numeric id");
+        }
+
+        String login = user.getAttribute("login");
+        if (login == null || login.isBlank()) {
+            throw new IllegalArgumentException("GitHub profile is missing a login");
+        }
+
+        String name = user.getAttribute("name");
+        String displayName = (name == null || name.isBlank()) ? login : name;
+
+        return new GitHubProfile(id.longValue(), login, displayName);
     }
 }

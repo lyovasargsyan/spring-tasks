@@ -12,13 +12,24 @@ public final class SensitiveData {
     public static String maskCardNumber(String cardNumber) {
         // TODO: keep only the last 4 digits and replace every other character with '*'.
         // null or shorter than 4 characters -> "****".
-        return cardNumber;
+        int hiddenLenght = cardNumber.length() - 4;
+        String wildCards = "*".repeat(hiddenLenght);
+        return wildCards + cardNumber.substring(hiddenLenght);
     }
 
     /** "anna.petrosyan@example.com" -> "a***@example.com" */
     public static String maskEmail(String email) {
         // TODO: keep the first character and everything from '@'; put "***" in between.
         // null, no '@', or '@' as the first character -> "***".
-        return email;
+        if (email == null) {
+            return "***";
+        }
+        int id = email.indexOf("@");
+        if (id <= 0) {
+            return "***";
+        }
+        String firstLetter = email.substring(0,1);
+        String wildCards = "***";
+        return firstLetter + wildCards + email.substring(id);
     }
 }
